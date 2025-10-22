@@ -1,0 +1,10 @@
+2025-10-20T08:14:22Z kubelet[1452]: Warning  Failed     pod/webapp-76c8d9f4cc-5xj6d   Failed to pull image "nginx:latest": ImagePullBackOff
+2025-10-20T08:15:05Z kubelet[1452]: Normal   Pulling    pod/api-server-7d64d4b8fc-z8nh5  Pulling image "backend:v2.1"
+2025-10-20T08:16:45Z kubelet[1452]: Warning  BackOff    pod/cache-redis-6c97dcdd84-mbl9j  Back-off restarting failed container=redis-server
+2025-10-20T08:17:22Z kubelet[1452]: Error    OOMKilled  pod/ml-worker-9bd876d7d-bt6km    Container killed due to memory limit (1Gi)
+2025-10-20T08:18:02Z ingress-nginx[1987]: Error 502 Bad Gateway while connecting to upstream
+2025-10-20T08:19:45Z kubelet[1452]: Warning  CrashLoopBackOff  pod/metrics-agent-7f6f98cbd7-ktw2l  Restarting container due to repeated failures
+2025-10-20T08:21:01Z kubelet[1452]: Normal   Started   pod/api-server-7d64d4b8fc-z8nh5
+2025-10-20T08:22:11Z kubelet[1452]: Warning  FailedMount  pod/elastic-node-5f7b6c7c5b-bzpsd  MountVolume.SetUp failed for volume "data" : hostPath type check failed
+2025-10-20T08:23:33Z kubelet[1452]: Warning  Unhealthy  pod/frontend-6b9f9b8f45-wvvv4  Liveness probe failed: HTTP probe failed with statuscode: 500
+2025-10-20T08:24:01Z kubelet[1452]: Normal   Killing  pod/frontend-6b9f9b8f45-wvvv4  Stopping container frontend due to failed liveness probe
