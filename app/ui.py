@@ -9,11 +9,11 @@ st.set_page_config(page_title="AI Log Analyzer", layout="wide")
 st.title("🛠️ AI Log Analyzer (Kubernetes)")
 st.caption("Paste logs • Upload file • Use sample • Export AI RCA report (.md)")
 
-# Persist across reruns
 ss = st.session_state
 ss.setdefault("last_report", "")
 ss.setdefault("last_filename", "log")
 ss.setdefault("last_heuristics", [])
+ss.setdefault("active_tab", "logs")   # 'logs' or 'analysis'
 
 # --- helper: colored badge HTML ---
 def badge(text: str, sev: str) -> str:
@@ -22,17 +22,27 @@ def badge(text: str, sev: str) -> str:
         "warning": "#D97706",  # amber-600
         "info":    "#15803D",  # green-700
     }
-    bg = colors.get(sev, "#334155")  # slate-700 default
+    bg = colors.get(sev, "#334155")
     return (
         f'<span style="display:inline-block;padding:4px 10px;'
         f'border-radius:999px;background:{bg};color:#fff;'
         f'font-size:12px;margin:0 6px 6px 0;">{text}</span>'
     )
 
-log_tab, analysis_tab = st.tabs(["📥 Logs Input", "🔎 AI Analysis"])
+# ---- view selector (radio behaves like tabs, but is controllable) ----
+tab = st.radio(
+    "View",
+    ["📥 Logs Input", "🔎 AI Analysis"],
+    horizontal=True,
+    index=0 if ss.active_tab == "logs" else 1,
+    key="view_selector",
+)
 
-with log_tab:
+# -------------------- LOGS INPUT VIEW --------------------
+if tab == "📥 Logs Input":
+    ss.active_tab = "logs"
     st.subheader("Provide your logs")
+
     mode = st.radio(
         "Select input method",
         ["Paste logs", "Upload file", "Use sample logs"],
@@ -55,7 +65,7 @@ with log_tab:
             filename_hint = Path(uploaded.name).stem or "uploaded"
             st.success(f"Loaded file: {uploaded.name}")
 
-    else:  # Use sample logs
+    else:  # sample
         sample_path = Path("data/sample_logs/k8s_sample.log")
         if sample_path.exists():
             logs_text = sample_path.read_text()
@@ -72,32 +82,32 @@ with log_tab:
                 heur = run_heuristics(logs_text)
                 report = summarize_logs(logs_text, heur)
 
-            # Save for Analysis tab
             ss.last_report = report
             ss.last_filename = filename_hint
             ss.last_heuristics = heur
 
-            # ✅ New API (no deprecation): set query params to point at Analysis tab
-            st.query_params["tab"] = "analysis"
-            st.success("Analysis complete. Check the AI Analysis tab →")
+            # programmatically switch to analysis view
+            ss.active_tab = "analysis"
+            st.rerun()
 
-with analysis_tab:
+# -------------------- ANALYSIS VIEW --------------------
+else:
+    ss.active_tab = "analysis"
     st.subheader("AI Generated Report")
 
     if not ss.last_report:
-        st.info("Run analysis from the Logs Input tab above.")
+        st.info("Run analysis from the Logs Input view above.")
     else:
         st.markdown("#### Heuristic Matches")
         if ss.last_heuristics:
-            # Render severity badges
-            badges_html = "".join(badge(h["hint"], h.get("severity", "info")) for h in ss.last_heuristics)
-            st.markdown(badges_html, unsafe_allow_html=True)
+            badges = "".join(badge(h["hint"], h.get("severity", "info")) for h in ss.last_heuristics)
+            st.markdown(badges, unsafe_allow_html=True)
         else:
             st.write("No common failure patterns detected.")
 
         st.markdown("---")
         st.markdown("### 🤖 AI Summary Report")
-        st.markdown(ss.last_report, unsafe_allow_html=False)
+        st.markdown(ss.last_report)
 
         ts = datetime.now().strftime("%Y%m%d-%H%M")
         fname = f"{ss.last_filename}-ai-log-analysis-{ts}.md"
