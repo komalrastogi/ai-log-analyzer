@@ -1,5 +1,4 @@
 # 🛠️ AI Log Analyzer (Kubernetes)
-
 ![Python](https://img.shields.io/badge/Python-3.9+-blue)
 ![Streamlit](https://img.shields.io/badge/Streamlit-UI-red)
 ![OpenAI](https://img.shields.io/badge/LLM-OpenAI-green)
@@ -9,90 +8,89 @@
 
 **Detects, explains and recommends fixes for Kubernetes failures automatically.**
 
-A developer-friendly AIOps tool that reads Kubernetes/Ingress logs, flags known failure patterns (heuristics), and generates a concise **Root-Cause + Fix** report using an LLM. Built to demo your **AI + DevOps** skills in a real, impactful way.
+A developer-friendly AIOps tool that reads Kubernetes/Ingress logs, flags known failure patterns (heuristics), and generates a concise **Root-Cause + Fix** report using an LLM. Built to demo your **AI + DevOps** chops in minutes.
 
 ---
 
 ## 🔥 Why this matters
-Traditional log triage is slow and noisy. This tool turns raw logs into **actionable insights**:
+Traditional log triage is slow and noisy. This tool turns raw logs into **actionable steps**:
 - What happened (summary)
 - Why it likely happened (probable root cause)
 - **Exact commands** to fix (e.g., `kubectl`/config changes)
 - Next steps to prevent recurrence
 
-Perfect for: **portfolio, internal demos, interview stories, and AIOps POCs**.
+Perfect for: **portfolio projects, interviews, internal demos, and AIOps POCs**.
 
 ---
 
 ## ✅ Features
-- **K8s heuristics with severity** (badges): CrashLoopBackOff, OOMKilled, ImagePullBackOff, 5xx/502/504, FailedMount, Probe failures, etc.
-- **LLM reasoning** (OpenAI `gpt-4o-mini` by default) to summarize and recommend fixes.
-- **Streamlit UI**: paste logs / upload file / choose sample cards.
-- **One-click report export** (`.md`) with timestamped filenames.
-- **Stateless CLI ⇒ browser app**: no infra setup required.
+- **K8s heuristics with severity** (CrashLoopBackOff, OOMKilled, ImagePullBackOff, 5xx, FailedMount, Probes)
+- **LLM reasoning** (OpenAI `gpt-4o-mini` by default) → Root-cause + remediation steps
+- **Streamlit UI** with paste / upload / sample logs
+- **One-click export** to Markdown report
+- Zero infra setup — runs as a desktop web app
 
 ---
 
 ## 🧠 Architecture
 
 ```mermaid
-flowchart LR
-    A[User Logs<br/>(Paste / Upload / Sample)] --> B[Parser]
-    B --> C[Heuristics Engine<br/>(CrashLoopBackOff / OOM / 5xx / Mount / Probes)]
-    B -->|raw log text| D[LLM Prompt Builder]
-    C -->|hints| D
-    D --> E[OpenAI API<br/>(gpt-4o-mini)]
-    E --> F[Markdown RCA<br/>(Summary • Root Cause • Fix)]
-    F --> G[Streamlit UI<br/>(Badges + Download)]
-✨ Screenshots (Step-wise Showcase)
+graph LR
+  A[User Logs (Paste / Upload / Sample)] --> B[Parser]
+  B --> C[Heuristics Engine (CrashLoopBackOff / OOM / 5xx / Mount / Probes)]
+  B -->|raw log text| D[LLM Prompt Builder]
+  C -->|hints| D
+  D --> E[OpenAI API (gpt-4o-mini)]
+  E --> F[Markdown RCA (Summary • Root Cause • Fix)]
+  F --> G[Streamlit UI (Badges + Download)]
+✨ Screenshots
 1️⃣ Logs Input (Sample Cards UI)
-<div style="border:1px solid #ddd; padding:12px; border-radius:8px; margin-bottom:20px;"> <p align="center"><strong>Logs Input (Sample Cards UI)</strong></p> <p align="center"><img src="docs/screenshots/1_input_cards.png" width="800"/></p> </div>
+<table width="100%"><tr><td align="center" style="border:1px solid #e5e7eb; border-radius:10px; padding:14px;"> <b>Logs Input (Sample Cards UI)</b><br/> <img src="docs/screenshots/1_input_cards.png" width="820" /> </td></tr></table>
 2️⃣ AI Analysis (Badges + RCA Summary)
-<div style="border:1px solid #ddd; padding:12px; border-radius:8px; margin-bottom:20px;"> <p align="center"><strong>AI Analysis (Badges + RCA Summary)</strong></p> <p align="center"><img src="docs/screenshots/2_analysis_badges_rca.png" width="800"/></p> </div>
+<table width="100%"><tr><td align="center" style="border:1px solid #e5e7eb; border-radius:10px; padding:14px;"> <b>AI Analysis (Badges + RCA Summary)</b><br/> <img src="docs/screenshots/2_analysis_badges_rca.png" width="820" /> </td></tr></table>
 🚀 Quickstart
-1️⃣ Clone & install
+<details> <summary><b>Click to expand installation steps</b></summary>
+✅ 1) Clone & install
 bash
 Copy code
 git clone https://github.com/komalrastogi/ai-log-analyzer.git
 cd ai-log-analyzer
 pip3 install -r requirements.txt
-2️⃣ Set environment
+🔐 2) Set your OpenAI key
 bash
 Copy code
-echo "OPENAI_API_KEY=sk-xxxx" > .env
-3️⃣ Run the UI
+echo "OPENAI_API_KEY=sk-xxxxxxxxxxxx" > .env
+▶️ 3) Run the UI
 bash
 Copy code
 python3 -m streamlit run app/ui.py
+</details>
 🧪 Sample Logs
-k8s_sample.log – mixed Kubernetes errors (ImagePullBackOff, CrashLoopBackOff, OOM)
-
-k8s_probe_dns.log – probe failures + DNSConfig issues + mount errors
-
-nginx_5xx.log – ingress 502/504 upstream failures + OOM
+📄 File	⚙️ Scenario
+k8s_sample.log	Mixed Kubernetes errors (ImagePullBackOff, CrashLoopBackOff, OOM)
+k8s_probe_dns.log	Probe failures + DNSConfig issues + FailedMount
+nginx_5xx.log	Ingress 502/504 upstream failures
 
 🧩 How it works
-parser.py → Converts raw logs → structured records
+parser.py → Parses raw logs into structured events
 
-heuristics.py → Detects & classifies error patterns with severity
+heuristics.py → Detects patterns and assigns severity
 
-ai_summary.py → Builds final LLM prompt using logs + hints
+ai_summary.py → Converts logs + hints → LLM prompt
 
-ui.py → Streamlit UI (cards, badges, markdown export)
+ui.py → Streamlit web UI with export option
 
-🧑‍💼 Resume-ready description
-Developed an AI-based Kubernetes Log Analyzer using heuristic pattern detection (CrashLoopBackOff, OOMKilled, probe failures, ingress 5xx) and LLM reasoning to generate actionable root-cause and remediation guidance via a polished UI.
+🧑‍💼 Resume-ready summary
+Built an AI-based Kubernetes Log Analyzer using heuristic pattern detection and LLM reasoning to produce actionable root-cause reports with a polished web UI.
 
 🗺️ Roadmap
-Self-healing actions (auto restart/scale/alerts)
+✅ RCA + UI export
 
-Multi-agent (Healer + Validator)
+🔜 Self-healing actions (auto restart / scale)
 
-HuggingFace offline fallback
+🔜 Multi-agent (Healer + Validator)
 
-🙌 Acknowledgements
-Inspired by real SRE/AIOps workflows:
-logs → patterns → RCA → remediation → prevention
+🔜 HuggingFace offline fallback
 
 📜 License
 MIT
