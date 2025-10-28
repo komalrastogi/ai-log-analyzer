@@ -14,14 +14,11 @@ ss.setdefault("last_report", "")
 ss.setdefault("last_filename", "log")
 ss.setdefault("last_heuristics", [])
 ss.setdefault("active_tab", "logs")   # 'logs' or 'analysis'
+ss.setdefault("chosen_sample", "Kubernetes Basic")
 
 # --- helper: colored badge HTML ---
 def badge(text: str, sev: str) -> str:
-    colors = {
-        "error":   "#B91C1C",  # red-700
-        "warning": "#D97706",  # amber-600
-        "info":    "#15803D",  # green-700
-    }
+    colors = {"error": "#B91C1C", "warning": "#D97706", "info": "#15803D"}
     bg = colors.get(sev, "#334155")
     return (
         f'<span style="display:inline-block;padding:4px 10px;'
@@ -65,43 +62,90 @@ if tab == "📥 Logs Input":
             filename_hint = Path(uploaded.name).stem or "uploaded"
             st.success(f"Loaded file: {uploaded.name}")
 
-    else:  # sample
-        sample_path = Path("data/sample_logs/k8s_sample.log")
-        if sample_path.exists():
-            logs_text = sample_path.read_text()
-            filename_hint = "sample_k8s"
-            st.info("Loaded sample logs ✅")
-        else:
-            st.error("Sample file not found at data/sample_logs/k8s_sample.log")
+    else:  # ---------- CARD-STYLE SAMPLE CHOOSER ----------
+        samples = {
+            "Kubernetes Basic": {
+                "path": Path("data/sample_logs/k8s_sample.log"),
+                "desc": "Mix of ImagePullBackOff, CrashLoopBackOff, OOMKilled, and 5xx.",
+                "key": "sample_k8s",
+            },
+            "Probe/DNS Issues": {
+                "path": Path("data/sample_logs/k8s_probe_dns.log"),
+                "desc": "Liveness/Readiness probe failures, DNSConfigForming, mount perms, OOM.",
+                "key": "sample_probe_dns",
+            },
+            "Ingress/Nginx 5xx": {
+                "path": Path("data/sample_logs/nginx_5xx.log"),
+                "desc": "Ingress 502/504 with upstream timeouts + probe failure + OOM.",
+                "key": "sample_nginx",
+            },
+        }
 
+        st.write("#### Choose a sample")
+        c1, c2, c3 = st.columns(3)
+
+        def card(col, title):
+            item = samples[title]
+            ok = item["path"].exists()
+            with col:
+                st.markdown(
+                    f"""
+                    <div style="border:1px solid #374151;border-radius:12px;padding:12px;height:164px">
+                      <div style="font-weight:600;margin-bottom:6px">{title}</div>
+                      <div style="font-size:13px;opacity:0.85;margin-bottom:10px">{item['desc']}</div>
+                      <div>{"✅ Ready" if ok else "❌ Missing file"}</div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+                st.button(
+                    f"Use {item['key'].replace('_',' ').title()}",
+                    key=f"use_{item['key']}",
+                    disabled=not ok,
+                    on_click=lambda: ss.update(chosen_sample=title),
+                )
+
+        card(c1, "Kubernetes Basic")
+        card(c2, "Probe/DNS Issues")
+        card(c3, "Ingress/Nginx 5xx")
+
+        chosen = ss.get("chosen_sample", "Kubernetes Basic")
+        item = samples[chosen]
+        if item["path"].exists():
+            logs_text = item["path"].read_text()
+            filename_hint = item["key"]
+            st.success(f"Loaded sample: {chosen} ✅")
+        else:
+            st.error(f"Sample file not found: {item['path']}")
+
+    # ----- Run analysis -----
     if st.button("🚀 Run AI Analysis", type="primary"):
         if not logs_text.strip():
             st.warning("Please provide logs before analyzing.")
         else:
-            with st.spinner("Analyzing logs with AI..."):
-                heur = run_heuristics(logs_text)
-                report = summarize_logs(logs_text, heur)
-
-            ss.last_report = report
-            ss.last_filename = filename_hint
-            ss.last_heuristics = heur
-
-            # programmatically switch to analysis view
-            ss.active_tab = "analysis"
-            st.rerun()
+            try:
+                with st.spinner("Analyzing logs with AI..."):
+                    heur = run_heuristics(logs_text)
+                    report = summarize_logs(logs_text, heur)
+                ss.last_report = report
+                ss.last_filename = filename_hint
+                ss.last_heuristics = heur
+                ss.active_tab = "analysis"   # programmatic switch
+                st.rerun()
+            except Exception as e:
+                st.error(f"Analysis failed: {e}")
 
 # -------------------- ANALYSIS VIEW --------------------
 else:
     ss.active_tab = "analysis"
     st.subheader("AI Generated Report")
-
     if not ss.last_report:
         st.info("Run analysis from the Logs Input view above.")
     else:
         st.markdown("#### Heuristic Matches")
         if ss.last_heuristics:
-            badges = "".join(badge(h["hint"], h.get("severity", "info")) for h in ss.last_heuristics)
-            st.markdown(badges, unsafe_allow_html=True)
+            badges_html = "".join(badge(h["hint"], h.get("severity", "info")) for h in ss.last_heuristics)
+            st.markdown(badges_html, unsafe_allow_html=True)
         else:
             st.write("No common failure patterns detected.")
 
@@ -115,6 +159,6 @@ else:
             label="📥 Download Report (.md)",
             data=ss.last_report,
             file_name=fname,
-            mime="text/markdown"
+            mime="text/markdown",
         )
 

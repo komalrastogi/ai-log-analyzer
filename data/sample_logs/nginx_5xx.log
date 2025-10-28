@@ -1,0 +1,6 @@
+2025-10-20T10:15:02Z ingress-nginx[1987]: Error 502 Bad Gateway while connecting to upstream, client: 203.0.113.11, server: api.example.com, upstream: "http://10.0.12.45:8080"
+2025-10-20T10:15:03Z ingress-nginx[1987]: Error 504 Gateway Timeout, client: 203.0.113.11, server: api.example.com, request: "GET /v1/users HTTP/1.1", upstream: "http://10.0.12.45:8080"
+2025-10-20T10:15:05Z kubelet[1452]: Warning  Unhealthy  pod/api-7d64d4b8fc-z8nh5  Liveness probe failed: Get "http://10.0.12.45:8080/healthz": context deadline exceeded
+2025-10-20T10:15:07Z kubelet[1452]: Warning  Back-off restarting failed container=api
+2025-10-20T10:15:10Z kubelet[1452]: Normal   Pulling    pod/api-7d64d4b8fc-z8nh5  Pulling image "backend:v2.2"
+2025-10-20T10:15:55Z kubelet[1452]: Error    OOMKilled  pod/cache-redis-6c97dcdd84-mbl9j  Container killed due to memory limit (256Mi)

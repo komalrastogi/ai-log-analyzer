@@ -1,0 +1,7 @@
+2025-10-20T09:00:11Z kubelet[1452]: Warning  Unhealthy  pod/orders-7d8f5c99f9-abc12  Liveness probe failed: HTTP probe failed with statuscode: 500
+2025-10-20T09:00:41Z kubelet[1452]: Warning  Unhealthy  pod/orders-7d8f5c99f9-abc12  Readiness probe failed: Get "http://10.12.3.77:8080/health": context deadline exceeded
+2025-10-20T09:01:12Z kubelet[1452]: Warning  BackOff    pod/orders-7d8f5c99f9-abc12  Back-off restarting failed container=orders
+2025-10-20T09:02:03Z kubelet[1452]: Warning  FailedMount  pod/payments-6c4db6b9d7-4k2m1  MountVolume.SetUp failed for volume "secrets" : permission denied
+2025-10-20T09:02:19Z kubelet[1452]: Warning  DNSConfigForming  node/ip-10-0-1-23  Nameserver limits were exceeded, some nameservers have been omitted, the applied nameserver line is: 172.20.0.10
+2025-10-20T09:03:45Z kubelet[1452]: Error    OOMKilled  pod/ml-batch-5b7fd4d8c6-7hj2s  Container killed due to memory limit (512Mi)
+2025-10-20T09:04:22Z kubelet[1452]: Warning  CrashLoopBackOff  pod/auth-6cfb7c6c5b-lmnpq  Back-off 5m0s restarting failed container=auth
