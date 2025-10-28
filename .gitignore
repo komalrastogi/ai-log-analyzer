@@ -2,3 +2,6 @@ __pycache__/
 *.pyc
 .env
 .vscode/
+.DS_Store
+docs/.DS_Store
+docs/screenshots/.DS_Store
