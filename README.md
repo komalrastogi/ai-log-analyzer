@@ -17,38 +17,38 @@ A developer-friendly AIOps tool that reads Kubernetes/Ingress logs, flags known 
 Traditional log triage is slow and noisy. This tool turns raw logs into **actionable insights**:
 - What happened (summary)
 - Why it likely happened (probable root cause)
-- **Exact kubectl/config fixes**
-- Preventive next steps
+- **Exact commands** to fix (e.g., `kubectl`/config changes)
+- Next steps to prevent recurrence
 
-Perfect for **portfolio**, **internal demos**, **interviews**, or as a stepping stone to **self-healing infra agents**.
+Perfect for: **portfolio, internal demos, interview stories, and AIOps POCs**.
 
 ---
 
 ## ✅ Features
-- Detects **CrashLoopBackOff, OOMKilled, 5xx/502/504 errors, probe failures, failed mounts** and more
-- Severity-aware **heuristic engine** with colored badges (Error/Warning/Info)
-- **LLM-powered remediation steps** (gpt-4o-mini by default)
-- Streamlit UI: **paste / upload / sample cards**
-- One-click **Markdown RCA export**
-- Kubernetes-focused design (SRE-grade)
+- **K8s heuristics with severity** (badges): CrashLoopBackOff, OOMKilled, ImagePullBackOff, 5xx/502/504, FailedMount, Probe failures, etc.
+- **LLM reasoning** (OpenAI `gpt-4o-mini` by default) to summarize and recommend fixes.
+- **Streamlit UI**: paste logs / upload file / choose sample cards.
+- **One-click report export** (`.md`) with timestamped filenames.
+- **Stateless CLI ⇒ browser app**: no infra setup required.
 
 ---
 
 ## 🧠 Architecture
+
 ```mermaid
 flowchart LR
-    A[User Logs\n(Paste/Upload/Sample)] --> B[Parser]
-    B --> C[Heuristics Engine\n(CrashLoopBackOff / OOM / 5xx / Mount / Probes)]
-    B -->|raw text| D[LLM Prompt Builder]
+    A[User Logs<br/>(Paste / Upload / Sample)] --> B[Parser]
+    B --> C[Heuristics Engine<br/>(CrashLoopBackOff / OOM / 5xx / Mount / Probes)]
+    B -->|raw log text| D[LLM Prompt Builder]
     C -->|hints| D
-    D --> E[OpenAI API\n(gpt-4o-mini)]
-    E --> F[Markdown Report\nSummary • Root Cause • Fix • Next Steps]
-    F --> G[Streamlit UI\nBadges + Download .md]
+    D --> E[OpenAI API<br/>(gpt-4o-mini)]
+    E --> F[Markdown RCA<br/>(Summary • Root Cause • Fix)]
+    F --> G[Streamlit UI<br/>(Badges + Download)]
 ✨ Screenshots (Step-wise Showcase)
 1️⃣ Logs Input (Sample Cards UI)
-<p align="center"> <img src="docs/screenshots/1_input_cards.png" width="800"/> </p>
+<div style="border:1px solid #ddd; padding:12px; border-radius:8px; margin-bottom:20px;"> <p align="center"><strong>Logs Input (Sample Cards UI)</strong></p> <p align="center"><img src="docs/screenshots/1_input_cards.png" width="800"/></p> </div>
 2️⃣ AI Analysis (Badges + RCA Summary)
-<p align="center"> <img src="docs/screenshots/2_analysis_badges_rca.png" width="800"/> </p>
+<div style="border:1px solid #ddd; padding:12px; border-radius:8px; margin-bottom:20px;"> <p align="center"><strong>AI Analysis (Badges + RCA Summary)</strong></p> <p align="center"><img src="docs/screenshots/2_analysis_badges_rca.png" width="800"/></p> </div>
 🚀 Quickstart
 1️⃣ Clone & install
 bash
@@ -64,28 +64,31 @@ echo "OPENAI_API_KEY=sk-xxxx" > .env
 bash
 Copy code
 python3 -m streamlit run app/ui.py
-🧪 Sample Logs Included
-File	Scenario
-k8s_sample.log	ImagePullBackOff + CrashLoopBackOff + OOM
-k8s_probe_dns.log	Probe failures + DNSConfig issues + mount errors
-nginx_5xx.log	Ingress 502/504 upstream failures
+🧪 Sample Logs
+k8s_sample.log – mixed Kubernetes errors (ImagePullBackOff, CrashLoopBackOff, OOM)
+
+k8s_probe_dns.log – probe failures + DNSConfig issues + mount errors
+
+nginx_5xx.log – ingress 502/504 upstream failures + OOM
 
 🧩 How it works
-Component	Responsibility
-parser.py	Converts raw logs → structured records
-heuristics.py	Detects & classifies error patterns
-ai_summary.py	Builds final LLM prompt using logs + hints
-ui.py	Streamlit UI (cards, badges, export)
+parser.py → Converts raw logs → structured records
+
+heuristics.py → Detects & classifies error patterns with severity
+
+ai_summary.py → Builds final LLM prompt using logs + hints
+
+ui.py → Streamlit UI (cards, badges, markdown export)
 
 🧑‍💼 Resume-ready description
-Developed an AI-based Kubernetes Log Analyzer using heuristic pattern detection (CrashLoopBackOff, OOMKilled, probe failures, ingress 5xx) and LLM reasoning to generate actionable root-cause and remediation guidance with a polished Streamlit UI.
+Developed an AI-based Kubernetes Log Analyzer using heuristic pattern detection (CrashLoopBackOff, OOMKilled, probe failures, ingress 5xx) and LLM reasoning to generate actionable root-cause and remediation guidance via a polished UI.
 
 🗺️ Roadmap
-Phase	Feature
-✅ Now	RCA + heuristics + UI export
-Next	Self-healing (auto restart/scale/alerts)
-Later	Multi-agent (Healer + Verifier)
-Future	HuggingFace offline fallback
+Self-healing actions (auto restart/scale/alerts)
+
+Multi-agent (Healer + Validator)
+
+HuggingFace offline fallback
 
 🙌 Acknowledgements
 Inspired by real SRE/AIOps workflows:
@@ -93,5 +96,3 @@ logs → patterns → RCA → remediation → prevention
 
 📜 License
 MIT
-
-
