@@ -47,7 +47,8 @@ B -->|raw logs| D[Prompt Builder]
 C -->|hints| D
 D --> E[OpenAI LLM]
 E --> F[RCA Markdown Report]
-F --> G["Streamlit UI (Badges + Export)"]```
+F --> G["Streamlit UI (Badges + Export)"]
+```
 
 
 ---
