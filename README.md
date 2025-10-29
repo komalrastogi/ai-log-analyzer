@@ -41,14 +41,14 @@ This tool converts raw logs into **actionable RCA**:
 
 ```mermaid
 flowchart LR
-A[Logs Input (Paste / Upload / Sample)] --> B[Parser]
+A["Logs Input (Paste / Upload / Sample)"] --> B[Parser]
 B --> C[Heuristics Engine]
 B -->|raw logs| D[Prompt Builder]
 C -->|hints| D
 D --> E[OpenAI LLM]
 E --> F[RCA Markdown Report]
-F --> G[Streamlit UI (Badges + Export)]
-```
+F --> G["Streamlit UI (Badges + Export)"]```
+
 
 ---
 
