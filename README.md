@@ -53,6 +53,15 @@ F --> G["Streamlit UI (Badges + Export)"]
 
 ---
 
+
+## ⭐ Support
+
+If you find this project useful, consider giving it a **star** on GitHub — it helps others discover it and supports continued development 🙂
+
+👉 Click the ⭐ button in the top-right corner
+
+---
+
 ## ✨ Screenshots (Step-wise Showcase) 
 
 
@@ -115,6 +124,21 @@ Streamlit frontend
 - HuggingFace fallback
 
 ---
+
+
+## 🧰 Tech Stack
+
+| Layer | Technology |
+|------|-------------|
+| Language | Python 3.9+ |
+| UI | Streamlit |
+| AI/LLM | OpenAI (`gpt-4o-mini`) |
+| Domain | Kubernetes / AIOps |
+| Packaging | Markdown export |
+| Infra | Local / No cluster required |
+
+---
+
 
 ## 🙌 Acknowledgements
 This project is a stepping stone toward self-healing Kubernetes — evolving from observability to autonomous remediation.
