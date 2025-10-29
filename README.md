@@ -40,14 +40,14 @@ This tool converts raw logs into **actionable RCA**:
 ## 🧠 Architecture
 
 ```mermaid
-graph LR
-    A[User Logs (Paste/Upload/Sample)] --> B[Parser]
-    B --> C[Heuristics Engine]
-    B -->|raw text| D[LLM Prompt Builder]
-    C -->|hints| D
-    D --> E[OpenAI LLM]
-    E --> F[Markdown RCA]
-    F --> G[Streamlit UI (badges + export)]
+flowchart LR
+A([🧾 Logs Input<br/>(Paste / Upload / Sample)]) --> B([🔍 Parser])
+B --> C([⚙️ Heuristics Engine])
+B -->|raw logs| D([🧠 Prompt Builder])
+C -->|hints| D
+D --> E([🤖 OpenAI LLM])
+E --> F([📄 RCA Markdown Report])
+F --> G([💻 Streamlit UI<br/>(Badges + Export)])
 ```
 
 ---
